@@ -54,7 +54,30 @@ python notes_site.py material <repo> --name "站名" --deploy youtube-notes
 注意：wrangler 4.158 的 `pages project create` 實際建的是 Worker 專案，
 而且會在 cwd 寫 `wrangler.jsonc`、改 `.gitignore`。用 `--deploy` 可避開這件事。
 
-`--deploy` 建立的專案不支援 push 自動部署；要 CI 請改用上方 Git 整合。
+`--deploy` 建立的專案不支援 push 自動部署；要 CI 請用下面的 Workers Builds。
+
+### Workers Builds（push 自動部署）
+
+Workers Builds **不吃** `wrangler.jsonc` 裡的 build 設定，指令要在 dashboard 填。
+repo 只需要一份 `wrangler.jsonc` 告訴 wrangler 靜態檔在哪：
+
+```jsonc
+{
+  "name": "站名",
+  "compatibility_date": "2026-11-01",
+  "assets": { "directory": "./public", "not_found_handling": "404-page" }
+}
+```
+
+dashboard：Worker → Settings → Build → Connect Git 後填
+
+| 欄位 | 值 |
+|---|---|
+| Build command | `python -m pip install --break-system-packages -q mkdocs-material && git clone --depth 1 https://github.com/Suyujay/notes-site-kit /tmp/kit && python /tmp/kit/notes_site.py material . --name "站名"` |
+| Deploy command | `npx wrangler@4 deploy` |
+| Build 環境變數 | `PYTHON_VERSION=3.12`（build image 預設 3.14，Material 的相依套件未必跟上） |
+
+build image 內建 Python 3.14.8 / pip 26.2.1 / uv，`git` 也有，所以上面不需要額外安裝步驟。
 
 ## 私有存取
 
