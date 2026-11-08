@@ -2,3 +2,8 @@
 /public/
 __pycache__/
 *.pyc
+
+# wrangler 本機快取
+.wrangler/
+.notes_build/
+public/
