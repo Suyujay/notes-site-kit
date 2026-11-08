@@ -47,6 +47,8 @@ Cloudflare Zero Trust → Access → Applications → Add self-hosted → 指向
 ## 已知限制
 
 - 非 UTF-8（Big5）的 `.md` 會被跳過並列在輸出中，需先轉存 UTF-8。
+- 檔名結尾是 `.` 或空白時（例如 `xxx_....md`）Windows 會吃掉尾端字元，導致建置失敗；
+  工具會在複製時自動改名（`xxx_....md` → `xxx.md`）並印出清單。
 - Mermaid 由 Material 於瀏覽時從 unpkg 載入；要完全離線請在 `templates/mkdocs.yml` 打開 `privacy` 插件。
 - 圖片請用相對路徑，絕對路徑在子路徑部署時會失效。
 - 建議把 `/.notes_build/` 與 `/public/` 加進筆記 repo 的 `.gitignore`。
