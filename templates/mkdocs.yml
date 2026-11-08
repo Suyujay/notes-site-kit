@@ -1,0 +1,70 @@
+site_name: __NAME__
+docs_dir: docs
+site_dir: ../public
+use_directory_urls: true
+
+theme:
+  name: material
+  language: zh-TW
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - navigation.footer
+    - search.suggest
+    - search.highlight
+    - search.share
+    - toc.follow
+    - content.code.copy
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      toggle:
+        icon: material/weather-night
+        name: 切換深色
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: 切換淺色
+
+plugins:
+  - search:
+      lang:
+        - zh
+        - en
+  # 需要完全離線（不連 unpkg / CDN）時取消註解：
+  # - privacy
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      toc_depth: 3
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+# 不在側欄顯示、但仍可直連的頁面寫在這裡：
+# not_in_nav: |
+#   **/temp_*.md

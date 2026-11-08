@@ -1,0 +1,4 @@
+/.notes_build/
+/public/
+__pycache__/
+*.pyc
