@@ -1,9 +1,10 @@
-/.notes_build/
-/public/
 __pycache__/
 *.pyc
 
-# wrangler ¥»¾÷§Ö¨ú
+# å»ºç½®ç”¢ç‰©
+/.notes_build/
+/public/
+
+# å·¥å…·æœ¬æ©Ÿå¿«å–
 .wrangler/
-.notes_build/
-public/
+.playwright-mcp/
