@@ -16,6 +16,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import re
 import shutil
 import subprocess
@@ -239,6 +240,7 @@ def main() -> None:
     ap.add_argument("--name", default=None)
     ap.add_argument("--serve", type=int, default=0)
     ap.add_argument("--no-index", action="store_true", help="不要自動補資料夾目錄頁")
+    ap.add_argument("--deploy", metavar="PROJECT", help="建置後用 wrangler 部署到 Cloudflare Pages")
     a = ap.parse_args()
 
     repo = a.repo.resolve()
@@ -271,6 +273,32 @@ def main() -> None:
         if a.mode == "docsify":
             host = ["-m", "http.server", str(a.serve), "-d", "public"]
         subprocess.run([sys.executable, *host], cwd=str(repo))
+
+    if a.deploy:
+        deploy_to_cloudflare(repo, out, a.deploy)
+
+
+def deploy_to_cloudflare(repo: Path, out: Path, project: str) -> None:
+    """用 wrangler 直接上傳（Workers 靜態資源），不需要 Cloudflare 的 Git 整合。
+
+    設定寫在 `.notes_build/` 而非 repo 根目錄，維持「筆記 repo 不加檔案」。
+    """
+    cfg = repo / ".notes_build" / "wrangler.jsonc"
+    rel = Path(os.path.relpath(out, cfg.parent)).as_posix()
+    cfg.write_text(
+        "{\n"
+        f'  "name": "{project}",\n'
+        '  "compatibility_date": "2026-11-01",\n'
+        '  "assets": {\n'
+        f'    "directory": "{rel}",\n'
+        '    "not_found_handling": "404-page"\n'
+        "  }\n"
+        "}\n",
+        encoding="utf-8",
+    )
+    cmd = 'npx --yes wrangler deploy -c wrangler.jsonc'
+    print(f"[deploy] {cmd}  (cwd={cfg.parent})")
+    subprocess.run(cmd, cwd=str(cfg.parent), shell=True, check=True)
 
 
 if __name__ == "__main__":
